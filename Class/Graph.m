@@ -25,6 +25,7 @@
 @interface Graph()
 @property (nonatomic, readwrite, retain) NSSet *nodes;
 - (GraphNode*)smallest_distance:(NSMutableDictionary*)dist nodes:(NSMutableSet*)nodes;
+- (BOOL)hasNode:(GraphNode*)node;
 @end
 
 
@@ -47,13 +48,16 @@
     [super dealloc];
 }
 
+
+
+
 // Using Dijkstra's algorithm to find shortest path
 // See http://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
 - (NSArray*)shortestPath:(GraphNode*)source to:(GraphNode*)target {
     if (![nodes_ containsObject:source] || ![nodes_ containsObject:target]) {
         return [NSArray array];
     }
-    
+
     NSUInteger size = [nodes_ count];
     NSMutableDictionary* dist = [NSMutableDictionary dictionaryWithCapacity:size];
     NSMutableDictionary* prev = [NSMutableDictionary dictionaryWithCapacity:size];
@@ -94,7 +98,7 @@
         
         // loop through each neighbor to find min dist
         for (GraphNode* neighbor in [neighbors objectEnumerator]) {
-            NSLog(@"Looping neighbor %@", (NSString*)[neighbor value]);
+            NSLog(@"Looping neighbor %@", (NSString*)[neighbor key]);
             float alt = [[dist objectForKey: minNode] floatValue];
             alt += [[minNode edgeConnectedTo: neighbor] weight];
             
@@ -127,8 +131,17 @@
 }
 
 - (BOOL)hasNode:(GraphNode*)node {
-    return !![nodes_ member:node];
+    return nil != [nodes_ member:node];
 }
+
+- (BOOL)hasNodeWithKey:(NSString*)key {
+	return [self hasNode:[GraphNode nodeWithKey:key]];
+}
+
+- (GraphNode*)nodeWithKey:(NSString*)key {
+	return [nodes_ member:[GraphNode nodeWithKey:key]];
+}
+
 
 // addNode first checks to see if we already have a node
 // that is equal to the passed in node.
@@ -166,5 +179,6 @@
 + (Graph*)graph {
     return [[[self alloc] init] autorelease];
 }
+
 
 @end

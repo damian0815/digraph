@@ -25,20 +25,20 @@
 
 @synthesize edgesIn = edgesIn_;
 @synthesize edgesOut = edgesOut_;
-@synthesize value = value_;
+@synthesize key = key_;
 
 - (id)init {
     if( (self=[super init]) ) {
-		self.value = nil;
+		key_ = nil;
 		self.edgesIn  = [NSMutableSet set];
         self.edgesOut = [NSMutableSet set];
 	}
     return self; 
 }
 
-- (id)initWithValue:(id)value {
+- (id)initWithKey:(NSString*)key {
     if( (self=[super init]) ) {
-		self.value = value;
+		key_ = [key copy];
         self.edgesIn  = [NSMutableSet set];
         self.edgesOut = [NSMutableSet set];
 	}
@@ -56,7 +56,7 @@
         [fromNode->edgesOut_ minusSet:edgesIn_];
     }
     
-	[value_ release];
+	[key_ release];
     [edgesIn_ release];
     [edgesOut_ release];
 	[super dealloc];
@@ -73,16 +73,17 @@
 - (BOOL)isEqualToGraphNode:(GraphNode*)other {
     if (self == other)
         return YES;
-    return [[self value] isEqual: [other value]];
+    return [[self key] isEqualToString: [other key]];
 }
 
 - (NSUInteger)hash
 {
-    return [ value_ hash];
+    return [ key_ hash];
 }
 
 -(GraphNode*) copyWithZone: (NSZone*) zone {
-    return [[GraphNode allocWithZone: zone] initWithValue:value_];
+	assert(false && "likely broken -- edges not copied");
+    return [[GraphNode allocWithZone: zone] initWithKey:key_];
 }
 
 - (GraphEdge*)linkToNode:(GraphNode*)node {
@@ -181,8 +182,8 @@
     return [[[GraphNode alloc] init] autorelease];
 }
 
-+ (id)nodeWithValue:(id)value {
-    return [[[GraphNode alloc] initWithValue:value] autorelease];
++ (id)nodeWithKey:(NSString*)key {
+    return [[[GraphNode alloc] initWithKey:key] autorelease];
 }
 
 @end

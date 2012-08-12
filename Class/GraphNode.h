@@ -11,17 +11,17 @@
 @class GraphEdge;
 
 @interface GraphNode : NSObject<NSCopying> {
-    id value_;
+    NSString* key_;
     NSMutableSet *edgesIn_;
     NSMutableSet *edgesOut_;
 }
 
 @property (nonatomic, readonly, retain) NSSet *edgesIn;
 @property (nonatomic, readonly, retain) NSSet *edgesOut;
-@property (nonatomic, readonly, retain) id    value;
+@property (nonatomic, readonly, copy) NSString* key;
 
 - (id)init;
-- (id)initWithValue:(id)value;
+- (id)initWithKey:(NSString*)key;
 - (BOOL)isEqualToGraphNode:(GraphNode*)otherNode;
 
 - (NSUInteger)inDegree;
@@ -34,5 +34,5 @@
 - (GraphEdge*)edgeConnectedFrom:(GraphNode*)fromNode;
 
 + (id)node;
-+ (id)nodeWithValue:(id)value;
++ (id)nodeWithKey:(NSString*)key;
 @end

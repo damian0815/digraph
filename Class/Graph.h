@@ -22,7 +22,8 @@
 - (GraphEdge*)addEdgeFromNode:(GraphNode*)fromNode toNode:(GraphNode*)toNode withWeight:(float)weight;
 - (void)removeNode:(GraphNode*)node;
 - (void)removeEdge:(GraphEdge*)edge;
-- (BOOL)hasNode:(GraphNode*)node;
+- (BOOL)hasNodeWithKey:(NSString*)key;
+- (GraphNode*)nodeWithKey:(NSString*)key;
 + (Graph*)graph;
 
 @end
