@@ -17,13 +17,22 @@
 @property (nonatomic, readonly, retain) NSSet *nodes;
 
 - (NSArray*)shortestPath:(GraphNode*)source to:(GraphNode*)target;
+
 - (GraphNode*)addNode:(GraphNode*)node;
-- (GraphEdge*)addEdgeFromNode:(GraphNode*)fromNode toNode:(GraphNode*)toNode;
-- (GraphEdge*)addEdgeFromNode:(GraphNode*)fromNode toNode:(GraphNode*)toNode withWeight:(float)weight;
 - (void)removeNode:(GraphNode*)node;
-- (void)removeEdge:(GraphEdge*)edge;
 - (BOOL)hasNodeWithKey:(NSString*)key;
 - (GraphNode*)nodeWithKey:(NSString*)key;
+
+- (NSSet*)allNodes;
+
+- (GraphEdge*)addEdgeFromNode:(GraphNode*)fromNode toNode:(GraphNode*)toNode;
+- (GraphEdge*)addEdgeFromNodeWithKey:(NSString*)fromKey toNodeWithKey:(NSString*)toKey;
+- (GraphEdge*)addEdgeFromNode:(GraphNode*)fromNode toNode:(GraphNode*)toNode withWeight:(float)weight;
+- (void)removeEdge:(GraphEdge*)edge;
+
+- (NSSet*)connectedComponentContainingNodeWithKey:(NSString*)key;
+
 + (Graph*)graph;
++ (NSArray*)topologicalSortWithNodes:(NSSet*)nodes;
 
 @end

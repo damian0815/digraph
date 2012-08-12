@@ -12,7 +12,7 @@
 @interface GraphNode()
 @property (nonatomic, readwrite, retain) NSSet *edgesIn;
 @property (nonatomic, readwrite, retain) NSSet *edgesOut;
-@property (nonatomic, readwrite, retain) id    value;
+@property (nonatomic, readwrite, copy) NSString* key;
 - (GraphEdge*)linkToNode:(GraphNode*)node;
 - (GraphEdge*)linkToNode:(GraphNode*)node weight:(float)weight;
 - (GraphEdge*)linkFromNode:(GraphNode*)node;
@@ -29,7 +29,7 @@
 
 - (id)init {
     if( (self=[super init]) ) {
-		key_ = nil;
+		self.key = nil;
 		self.edgesIn  = [NSMutableSet set];
         self.edgesOut = [NSMutableSet set];
 	}
@@ -38,7 +38,7 @@
 
 - (id)initWithKey:(NSString*)key {
     if( (self=[super init]) ) {
-		key_ = [key copy];
+		self.key = key;
         self.edgesIn  = [NSMutableSet set];
         self.edgesOut = [NSMutableSet set];
 	}
@@ -65,7 +65,7 @@
 - (BOOL)isEqual:(id)other {
     if (other == self)
         return YES;
-    if (!other || ![other isKindOfClass:[self class]])
+    if (!other || ![[other class] isSubclassOfClass:[GraphNode class]])
         return NO;
     return [self isEqualToGraphNode:other];
 }
@@ -146,7 +146,7 @@
     return [self outDegree] == 0;
 }
 
-- (NSMutableSet*)outNodes {
+- (NSSet*)outNodes {
     NSMutableSet* set = [NSMutableSet setWithCapacity:[edgesOut_ count]];
     for( GraphEdge* edge in [edgesOut_ objectEnumerator] ) {
         [set addObject: [edge toNode]];
@@ -154,7 +154,7 @@
     return set;
 }
 
-- (NSMutableSet*)inNodes {
+- (NSSet*)inNodes {
     NSMutableSet* set = [NSMutableSet setWithCapacity:[edgesIn_ count]];
     for( GraphEdge* edge in [edgesIn_ objectEnumerator] ) {
         [set addObject: [edge fromNode]];
@@ -184,6 +184,10 @@
 
 + (id)nodeWithKey:(NSString*)key {
     return [[[GraphNode alloc] initWithKey:key] autorelease];
+}
+
+- (NSString*)description {
+	return [NSString stringWithFormat:@"GraphNode:%@", [self key]];
 }
 
 @end

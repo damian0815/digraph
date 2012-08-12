@@ -162,6 +162,12 @@
     return [fromNode linkToNode:toNode];
 }
 
+- (GraphEdge*)addEdgeFromNodeWithKey:(NSString*)fromKey toNodeWithKey:(NSString*)toKey
+{
+	return [self addEdgeFromNode:[GraphNode nodeWithKey:fromKey] toNode:[GraphNode nodeWithKey:toKey]];
+}
+
+
 - (GraphEdge*)addEdgeFromNode:(GraphNode*)fromNode toNode:(GraphNode*)toNode withWeight:(float)weight {
     fromNode = [self addNode:fromNode];
     toNode   = [self addNode:toNode];
@@ -180,5 +186,78 @@
     return [[[self alloc] init] autorelease];
 }
 
+- (NSSet*)allNodes{
+	return nodes_;
+}
+
+- (NSSet*)connectedComponentContainingNodeWithKey:(NSString*)key
+{
+	// traverse
+	NSMutableSet* visitedNodes = [NSMutableSet set];
+	NSMutableSet* queue = [NSMutableSet setWithObject:[self nodeWithKey:key]];
+	while ( [queue count] > 0 )
+	{
+		// get next from queue
+		GraphNode* n = [queue anyObject];
+		[queue removeObject:n];
+		[visitedNodes addObject:n];
+		// visit unvisited
+		for ( GraphNode* next in [n outNodes] ) {
+			if ( ![visitedNodes containsObject:next] )
+				[queue addObject:next];
+		}
+		for ( GraphNode* prev in [n inNodes] ) {
+			if ( ![visitedNodes containsObject:prev] )
+				[queue addObject:prev];
+		}
+			
+	}
+	
+	// done
+	return visitedNodes;
+}
+
+
++ (NSArray*)topologicalSortWithNodes:(NSSet*)nodes
+{
+	NSMutableArray* sourceNodes = [NSMutableArray array];
+	for ( GraphNode* node in nodes ){
+		if ( [node isSource] )
+			[sourceNodes addObject:node];
+	}
+	
+	NSMutableArray* l = [NSMutableArray array];// = new /*Array*/vector<Node*>(this.graph.getNodes().size());
+	NSMutableArray* r = [NSMutableArray array];// = new /*Array*/vector<Edge*>(this.graph.getEdges().size()); // removed
+	// edges
+	while ([sourceNodes count] > 0) {
+		GraphNode* n = [sourceNodes objectAtIndex:0];
+		[sourceNodes removeObjectAtIndex:0];
+		[l addObject:n];
+
+		NSSet* outEdges = [n edgesOut];
+		for ( GraphEdge* e in outEdges ) {
+			GraphNode* m = [e toNode];
+			[r addObject:e];
+			BOOL allEdgesRemoved = YES;
+			// then checking if the target has any more "in" edges left
+			
+			NSSet* inEdges = [n edgesIn];
+			for ( GraphEdge* e2 in inEdges ) {
+				if ( ![r containsObject:e2] ) {
+					allEdgesRemoved = false;
+				}
+			}
+			if (allEdgesRemoved) {
+				[sourceNodes addObject:m];
+			}
+		}
+	}
+	if ( [nodes count] != [l count] ) {
+		NSLog(@"Topological sort failed for graph in Sugiyama layout, %i total nodes, %i sorted nodes, remaining nodes: %@\n", [nodes count], [l count], sourceNodes );
+		assert(false && "topological sort failed");
+	}
+	return l;
+
+}
 
 @end

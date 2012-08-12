@@ -28,8 +28,8 @@
 - (NSUInteger)outDegree;
 - (BOOL)isSource;
 - (BOOL)isSink;
-- (NSMutableSet*)outNodes;
-- (NSMutableSet*)inNodes;
+- (NSSet*)outNodes;
+- (NSSet*)inNodes;
 - (GraphEdge*)edgeConnectedTo:(GraphNode*)toNode;
 - (GraphEdge*)edgeConnectedFrom:(GraphNode*)fromNode;
 
