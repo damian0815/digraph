@@ -24,15 +24,22 @@
 - (GraphNode*)nodeWithKey:(NSString*)key;
 
 - (NSSet*)allNodes;
+- (NSSet*)allEdges;
 
 - (GraphEdge*)addEdgeFromNode:(GraphNode*)fromNode toNode:(GraphNode*)toNode;
 - (GraphEdge*)addEdgeFromNodeWithKey:(NSString*)fromKey toNodeWithKey:(NSString*)toKey;
 - (GraphEdge*)addEdgeFromNode:(GraphNode*)fromNode toNode:(GraphNode*)toNode withWeight:(float)weight;
 - (void)removeEdge:(GraphEdge*)edge;
 
+- (void)revertEdge:(GraphEdge*)edge;
+- (void)unrevertEdge:(GraphEdge *)edge;
+
 - (NSSet*)connectedComponentContainingNodeWithKey:(NSString*)key;
+/// returns an array of NSSets
+- (NSArray*)connectedComponents;
 
 + (Graph*)graph;
+
 + (NSArray*)topologicalSortWithNodes:(NSSet*)nodes;
 
 @end

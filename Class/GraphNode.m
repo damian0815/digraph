@@ -9,11 +9,16 @@
 #import "GraphNode.h"
 #import "GraphEdge.h"
 
+@interface GraphEdge()
+- (void)setFromNode:(GraphNode *)from toNode:(GraphNode*)to;
+@end
+
 @interface GraphNode()
 @property (nonatomic, readwrite, retain) NSSet *edgesIn;
 @property (nonatomic, readwrite, retain) NSSet *edgesOut;
 @property (nonatomic, readwrite, copy) NSString* key;
 - (GraphEdge*)linkToNode:(GraphNode*)node;
+- (GraphEdge*)linkToNode:(GraphNode*)node usingEdgeObject:(GraphEdge*)edge;
 - (GraphEdge*)linkToNode:(GraphNode*)node weight:(float)weight;
 - (GraphEdge*)linkFromNode:(GraphNode*)node;
 - (GraphEdge*)linkFromNode:(GraphNode*)node weight:(float)weight;
@@ -91,6 +96,13 @@
     [edgesOut_          addObject:edge];
     [node->edgesIn_     addObject:edge];
     return edge;
+}
+
+- (GraphEdge*)linkToNode:(GraphNode *)node usingEdgeObject:(GraphEdge *)edge {
+	[edge setFromNode:self toNode:node];
+	[edgesOut_ addObject:edge];
+	[node->edgesIn_ addObject:edge];
+	return edge;
 }
 
 - (GraphEdge*)linkToNode:(GraphNode*)node weight:(float)weight {

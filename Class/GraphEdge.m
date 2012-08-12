@@ -15,6 +15,9 @@
 @interface GraphEdge()
 @property (nonatomic, readwrite, retain)  GraphNode *fromNode;
 @property (nonatomic, readwrite, retain)  GraphNode *toNode;
+
+- (void)setFromNode:(GraphNode *)from toNode:(GraphNode*)to;
+
 @end
 
 @implementation GraphEdge
@@ -22,6 +25,7 @@
 @synthesize fromNode = fromNode_;
 @synthesize toNode = toNode_;
 @synthesize weight = weight_;
+@synthesize reverted = reverted_;
 
 
 - (id)init {
@@ -52,6 +56,12 @@
     }
     
     return self;
+}
+
+- (void)setFromNode:(GraphNode *)from toNode:(GraphNode*)to
+{
+	self.fromNode = from;
+	self.toNode = to;
 }
 
 -(void) dealloc
@@ -95,6 +105,11 @@
 
 + (id)edgeWithFromNode:(GraphNode*)fromNode toNode:(GraphNode*)toNode weight:(float)weight {
     return [[[self alloc] initWithFromNode:fromNode toNode:toNode weight:weight] autorelease];  
+}
+
+- (NSString*)description
+{
+	return [NSString stringWithFormat:@"GraphEdge:%@->%@%@", [fromNode_ key], [toNode_ key], reverted_?@"(rev)":@""];
 }
 
 @end

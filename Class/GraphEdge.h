@@ -14,11 +14,13 @@
     GraphNode   *fromNode_;
     GraphNode   *toNode_;
     float       weight_;
+	BOOL        reverted_;
 }
 
 @property (nonatomic, readonly, retain)  GraphNode *fromNode;
 @property (nonatomic, readonly, retain)  GraphNode *toNode;
 @property (nonatomic, readwrite, assign) float     weight;
+@property (nonatomic, assign)	 BOOL      reverted;
 
 - (id)init;
 - (id)initWithFromNode:(GraphNode*)fromNode toNode:(GraphNode*)toNode;

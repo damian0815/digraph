@@ -14,6 +14,7 @@
 @property (nonatomic, readwrite, retain) NSSet *edgesOut;
 @property (nonatomic, readwrite, retain) id    value;
 - (GraphEdge*)linkToNode:(GraphNode*)node;
+- (GraphEdge*)linkToNode:(GraphNode*)node usingEdgeObject:(GraphEdge*)edge;
 - (GraphEdge*)linkToNode:(GraphNode*)node weight:(float)weight;
 - (GraphEdge*)linkFromNode:(GraphNode*)node;
 - (GraphEdge*)linkFromNode:(GraphNode*)node weight:(float)weight;
@@ -93,7 +94,7 @@
         [remaining removeObject:minNode];
 
         // find neighbors that have not been removed yet
-        NSMutableSet* neighbors = [minNode outNodes];
+        NSMutableSet* neighbors = [[minNode outNodes] mutableCopy];
         [neighbors intersectSet:remaining];
         
         // loop through each neighbor to find min dist
@@ -182,12 +183,76 @@
     [[edge fromNode] unlinkToNode:[edge toNode]];
 }
 
+
+- (void)revertEdge:(GraphEdge *)edge
+{
+	if ( ![edge reverted] )
+	{
+		// remove existing edge
+		[self removeEdge:edge];
+		
+		// replace + add again
+		[[edge toNode] linkToNode:[edge fromNode] usingEdgeObject:edge];
+		[edge setReverted:YES];
+	}	
+}
+
+- (void)unrevertEdge:(GraphEdge *)edge
+{
+	if ( [edge reverted] )
+	{
+		// remove existing edge
+		[self removeEdge:edge];
+		
+		// replace + add again
+		[[edge toNode] linkToNode:[edge fromNode] usingEdgeObject:edge];
+		[edge setReverted:NO];
+	}	
+}
+
+
+
 + (Graph*)graph {
     return [[[self alloc] init] autorelease];
 }
 
+
 - (NSSet*)allNodes{
 	return nodes_;
+}
+
+- (NSSet*)allEdges{
+	NSMutableSet* edges = [NSMutableSet set];
+	NSSet* nodes = [self allNodes];
+	for ( GraphNode* node in nodes ) {
+		[edges unionSet:[node edgesIn]];
+		[edges unionSet:[node edgesOut]];
+	}
+	return edges;
+}
+
+/// returns an array of NSSets
+- (NSArray*)connectedComponents
+{
+	NSMutableArray* components = [NSMutableArray array];
+	
+	NSMutableSet* remaining = [[self allNodes] mutableCopy];
+	while ( [remaining count] > 0 )
+	{
+		GraphNode* node = [remaining anyObject];
+		[remaining removeObject:node];
+		
+		// get the component containing this node
+		NSSet* component = [self connectedComponentContainingNodeWithKey:[node key]];
+		[components addObject:component];
+
+		// remove it from the remaining nodes to be checked
+		[remaining minusSet:component];
+	}
+	
+	// done
+	return components;
+	
 }
 
 - (NSSet*)connectedComponentContainingNodeWithKey:(NSString*)key
@@ -220,18 +285,21 @@
 
 + (NSArray*)topologicalSortWithNodes:(NSSet*)nodes
 {
-	NSMutableArray* sourceNodes = [NSMutableArray array];
+	NSMutableArray* q = [NSMutableArray array];
 	for ( GraphNode* node in nodes ){
 		if ( [node isSource] )
-			[sourceNodes addObject:node];
+			[q addObject:node];
 	}
 	
 	NSMutableArray* l = [NSMutableArray array];// = new /*Array*/vector<Node*>(this.graph.getNodes().size());
-	NSMutableArray* r = [NSMutableArray array];// = new /*Array*/vector<Edge*>(this.graph.getEdges().size()); // removed
+	NSMutableSet* r = [NSMutableSet set];// = new /*Array*/vector<Edge*>(this.graph.getEdges().size()); // removed
 	// edges
-	while ([sourceNodes count] > 0) {
-		GraphNode* n = [sourceNodes objectAtIndex:0];
-		[sourceNodes removeObjectAtIndex:0];
+	while ([q count] > 0) {
+
+		NSLog(@"Topological sort iteration: %i total nodes (%@), %i sorted nodes (%@), r contains %@, remaining nodes: %@\n", [nodes count], nodes, [l count], l, r, q );
+		
+		GraphNode* n = [q objectAtIndex:0];
+		[q removeObjectAtIndex:0];
 		[l addObject:n];
 
 		NSSet* outEdges = [n edgesOut];
@@ -248,12 +316,12 @@
 				}
 			}
 			if (allEdgesRemoved) {
-				[sourceNodes addObject:m];
+				[q addObject:m];
 			}
 		}
 	}
 	if ( [nodes count] != [l count] ) {
-		NSLog(@"Topological sort failed for graph in Sugiyama layout, %i total nodes, %i sorted nodes, remaining nodes: %@\n", [nodes count], [l count], sourceNodes );
+		NSLog(@"Topological sort failed for graph, %i total nodes (%@), %i sorted nodes (%@), r contains %@, remaining nodes: %@\n", [nodes count], nodes, [l count], l, r, q );
 		assert(false && "topological sort failed");
 	}
 	return l;
