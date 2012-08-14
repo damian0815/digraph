@@ -296,7 +296,7 @@
 	// edges
 	while ([q count] > 0) {
 
-		NSLog(@"Topological sort iteration: %i total nodes (%@), %i sorted nodes (%@), r contains %@, remaining nodes: %@\n", [nodes count], nodes, [l count], l, r, q );
+		/*NSLog(@"Topological sort iteration: %i total nodes (%@), %i sorted nodes (%@), r contains %@, remaining nodes: %@\n", [nodes count], nodes, [l count], l, r, q );*/
 		
 		GraphNode* n = [q objectAtIndex:0];
 		[q removeObjectAtIndex:0];

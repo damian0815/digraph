@@ -63,7 +63,7 @@ vector<PositionedGraphNode*> SugiyamaLayoutLayerStack::getConnectedTo(Positioned
 		for ( vector<PositionedGraphNode*>::iterator it = layers.at(layerIndex).begin(); it != layers.at(layerIndex).end(); ++it )
 		{
 			PositionedGraphNode* n2 = *it;
-			if (nil!=[n1 edgeConnectedTo:n2]) {
+			if ((nil!=[n1 edgeConnectedTo:n2]) || (nil!=[n1 edgeConnectedFrom:n2])) {
 				ln.push_back(n2);
 			}
 		}
@@ -204,7 +204,6 @@ void SugiyamaLayoutLayerStack::xPosDown(int staticIndex, int flexIndex) {
 		PositionedGraphNode* n = flex[i];
 		vector<PositionedGraphNode*> neighbors = getConnectedTo(n, staticIndex);
 		double avg = avgX(neighbors);
-		// if i is 0 use avg as min (ie don't use a min)
 		double min = (i > 0) ? (flex[i-1].pos.x + flex[i-1].size.width + X_SEP) : (-numeric_limits<double>::max());
 		if (!isnan(avg)) {
 			[n setPos:CGPointMake( MAX(min, avg - n.size.width/2.0), n.pos.y )];

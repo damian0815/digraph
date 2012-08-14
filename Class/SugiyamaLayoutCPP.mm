@@ -54,21 +54,21 @@
 void SugiyamaLayout::apply(Graph* _graph) 
 {
 	graph = _graph;
-	NSLog(@"removeCycles");
+	//NSLog(@"removeCycles");
 	removeCycles();
-	NSLog(@"splitIntoLayers");
+	//NSLog(@"splitIntoLayers");
 	splitIntoLayers();
-	NSLog(@"insertDummies");
+	//NSLog(@"insertDummies");
 	insertDummies();
-	NSLog(@"initIndexes");
+	//NSLog(@"initIndexes");
 	stack.initIndexes();
-	NSLog(@"reduceCrossings");
+	//NSLog(@"reduceCrossings");
 	stack.reduceCrossings();
-	NSLog(@"undoRemoveCycles");
+	//NSLog(@"undoRemoveCycles");
 	undoRemoveCycles();
-	NSLog(@"layerHoughts");
+	//NSLog(@"layerHoughts");
 	stack.layerHeights();
-	NSLog(@"xPos");
+	//NSLog(@"xPos");
 	stack.xPos();
 	// log.debug(new ToStringVisitor().toString(graph));
 }
@@ -183,7 +183,7 @@ void SugiyamaLayout::removeCycles() {
 	for ( vector<PositionedGraphNode*>::iterator it = nodes.begin(); it != nodes.end(); ++it )
 	{
 		PositionedGraphNode* n = *it;
-		NSLog(@"removing cycles for node %@", [n key] );
+		//NSLog(@"removing cycles for node %@", [n key] );
 
 		
 		NSSet* inEdges = [n edgesIn];
