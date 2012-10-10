@@ -94,7 +94,7 @@
         [remaining removeObject:minNode];
 
         // find neighbors that have not been removed yet
-        NSMutableSet* neighbors = [[minNode outNodes] mutableCopy];
+        NSMutableSet* neighbors = [[[minNode outNodes] mutableCopy] autorelease];
         [neighbors intersectSet:remaining];
         
         // loop through each neighbor to find min dist
@@ -236,7 +236,7 @@
 {
 	NSMutableArray* components = [NSMutableArray array];
 	
-	NSMutableSet* remaining = [[self allNodes] mutableCopy];
+	NSMutableSet* remaining = [[[self allNodes] mutableCopy] autorelease];
 	while ( [remaining count] > 0 )
 	{
 		GraphNode* node = [remaining anyObject];
