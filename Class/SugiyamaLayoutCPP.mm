@@ -42,14 +42,76 @@
 /**
  * Sugiyama layout algorithm
  * @author avishnyakov
+ * Converted from Java to C++ by Damian Stewart
+ * @author damian@damianstewart.com
+ *
  */
 
+#include "SugiyamaLayoutLayerStackCPP.h"
 #include "SugiyamaLayoutCPP.h"
 #include <set>
 #include <algorithm>
 
 #import "PositionedGraphNode.h"
-#import "Graph.h"
+
+
+class SugiyamaLayout
+{
+public:
+	
+	void apply(Graph* _graph) ;
+	
+private:
+	
+	
+	void insertDummies();
+	void splitIntoLayers();
+	bool dup(GraphEdge* e1);
+	void removeCycles();
+	vector<PositionedGraphNode*> sortByOutDegree();
+	
+	vector<PositionedGraphNode*> sortByInMinusOutDegree();
+	vector<PositionedGraphNode*> sources();
+	vector<PositionedGraphNode*> topologicalSort();
+	void undoRemoveCycles();
+	
+	Graph* graph;
+	SugiyamaLayoutLayerStack stack;
+	
+	
+};
+
+
+
+int sugiyamaLayout( Graph* graphToLayout )
+{
+	// check class of all nodes
+	bool fail = false;
+	for ( id node in [graphToLayout allNodes] ) {
+		if ( ![[node class] isSubclassOfClass:[PositionedGraphNode class]] ) {
+			NSLog(@"sugiyamaLayout: can't perform, node %@ is not a subclass of PositionedGraphNode", [node key] );
+			fail = true;
+		}
+	}
+	
+	if ( [[graphToLayout connectedComponents] count] > 1 ) {
+		NSLog(@"sugiyamaLayout: can't perform, graph has >1 connected components" );
+		fail = true;
+	}
+	
+	if ( fail )
+		return 0;
+	
+	SugiyamaLayout layout;
+	layout.apply( graphToLayout );
+
+	return 1;
+}
+
+
+
+
+
 
 void SugiyamaLayout::apply(Graph* _graph) 
 {

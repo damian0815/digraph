@@ -8,31 +8,11 @@
 
 #pragma once
 
-#include "SugiyamaLayoutLayerStackCPP.h"
+#import "Graph.h"
 
-class SugiyamaLayout
-{
-public:
-	
-	void apply(Graph* _graph) ;
-	
-private:
-
-	
-	void insertDummies();
-	void splitIntoLayers();	
-	bool dup(GraphEdge* e1);
-	void removeCycles();
-	vector<PositionedGraphNode*> sortByOutDegree();
-	
-	vector<PositionedGraphNode*> sortByInMinusOutDegree();	
-	vector<PositionedGraphNode*> sources();	
-	vector<PositionedGraphNode*> topologicalSort();	
-	void undoRemoveCycles();
-
-	Graph* graph;
-	SugiyamaLayoutLayerStack stack;
-		
-
-};
-
+#ifdef __cplusplus
+extern "C"
+#endif
+/// Graph should be make up of PositionedGraphNode rather than GraphNode
+/// Returns 1 on success, 0 on fail
+int sugiyamaLayout( Graph* graphToLayout );

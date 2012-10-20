@@ -23,4 +23,12 @@
 	return CGPointMake( pos.x + size.width/2, pos.y + size.height/2 );
 }
 
++ (id)node {
+	return [[[PositionedGraphNode alloc] init] autorelease];
+}
+
++ (id)nodeWithKey:(NSString*)key {
+	return [[[PositionedGraphNode alloc] initWithKey:key] autorelease];
+}
+
 @end
