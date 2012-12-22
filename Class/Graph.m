@@ -151,7 +151,8 @@
 - (GraphNode*)addNode:(GraphNode*)node {
     GraphNode* existing = [nodes_ member:node];
     if (!existing) {
-       [nodes_ addObject:node]; 
+		NSLog(@"Graph: addNode %@", [node key] );
+		[nodes_ addObject:node];
         existing = node;
     }
     return existing;
@@ -173,6 +174,15 @@
     fromNode = [self addNode:fromNode];
     toNode   = [self addNode:toNode];
     return [fromNode linkToNode:toNode weight:weight];    
+}
+- (BOOL)hasEdgeFromNode:(GraphNode*)fromNode toNode:(GraphNode*)toNode
+{
+	return [[fromNode outNodes] containsObject:toNode];
+}
+
+- (BOOL)hasEdgeFromNodeWithKey:(NSString*)fromKey toNodeWithKey:(NSString*)toKey
+{
+	return [self hasEdgeFromNode:[GraphNode nodeWithKey:fromKey] toNode:[GraphNode nodeWithKey:toKey]];
 }
 
 - (void)removeNode:(GraphNode*)node {

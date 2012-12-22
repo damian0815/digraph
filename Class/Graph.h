@@ -30,6 +30,8 @@
 - (GraphEdge*)addEdgeFromNodeWithKey:(NSString*)fromKey toNodeWithKey:(NSString*)toKey;
 - (GraphEdge*)addEdgeFromNode:(GraphNode*)fromNode toNode:(GraphNode*)toNode withWeight:(float)weight;
 - (void)removeEdge:(GraphEdge*)edge;
+- (BOOL)hasEdgeFromNode:(GraphNode*)fromNode toNode:(GraphNode*)toNode;
+- (BOOL)hasEdgeFromNodeWithKey:(NSString*)fromKey toNodeWithKey:(NSString*)toKey;
 
 - (void)revertEdge:(GraphEdge*)edge;
 - (void)unrevertEdge:(GraphEdge *)edge;
