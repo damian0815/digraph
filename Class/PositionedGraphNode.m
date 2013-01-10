@@ -12,6 +12,18 @@
 
 @synthesize index, pos, size;
 
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+	if ( ( self=[super initWithCoder:aDecoder] ) ) {
+	}
+	return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+	[super encodeWithCoder:aCoder];
+}
+
 - (void)setCentrePos:(CGPoint)centrePos
 {
 	pos.x = centrePos.x - size.width/2;

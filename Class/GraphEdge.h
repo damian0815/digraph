@@ -10,7 +10,7 @@
 
 @class GraphNode;
 
-@interface GraphEdge : NSObject {
+@interface GraphEdge : NSObject<NSCoding> {
     GraphNode   *fromNode_;
     GraphNode   *toNode_;
     float       weight_;

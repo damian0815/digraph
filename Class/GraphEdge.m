@@ -27,6 +27,25 @@
 @synthesize weight = weight_;
 @synthesize reverted = reverted_;
 
+- (id)initWithCoder:(NSCoder*)coder
+{
+	self = [super init];
+	if ( self ) {
+		self.fromNode = [GraphNode nodeWithKey:[coder decodeObjectForKey:@"fromNodeKey"]];
+		self.toNode = [GraphNode nodeWithKey:[coder decodeObjectForKey:@"toNodeKey"]];
+		self.weight = [coder decodeFloatForKey:@"weight"];
+		self.reverted =  [coder decodeBoolForKey:@"reverted"];
+	}
+	return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+	[coder encodeObject:[self.fromNode key] forKey:@"fromNodeKey"];
+	[coder encodeObject:[self.toNode key] forKey:@"toNodeKey"];
+	[coder encodeFloat:self.weight forKey:@"weight"];
+	[coder encodeBool:self.reverted forKey:@"reverted"];
+}
 
 - (id)init {
     if( (self = [super init]) ) {

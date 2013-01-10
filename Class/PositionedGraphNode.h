@@ -9,7 +9,7 @@
 #import "GraphNode.h"
 #import <Foundation/Foundation.h>
 
-@interface PositionedGraphNode : GraphNode
+@interface PositionedGraphNode : GraphNode<NSCoding>
 
 @property (assign) CGPoint pos;
 @property (assign) CGSize size;

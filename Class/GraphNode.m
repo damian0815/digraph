@@ -17,6 +17,7 @@
 @property (nonatomic, readwrite, retain) NSSet *edgesIn;
 @property (nonatomic, readwrite, retain) NSSet *edgesOut;
 @property (nonatomic, readwrite, copy) NSString* key;
+@property (nonatomic, readwrite, retain) id value;
 - (GraphEdge*)linkToNode:(GraphNode*)node;
 - (GraphEdge*)linkToNode:(GraphNode*)node usingEdgeObject:(GraphEdge*)edge;
 - (GraphEdge*)linkToNode:(GraphNode*)node weight:(float)weight;
@@ -49,6 +50,23 @@
 	}
     return self; 
 }
+
+
+- (id)initWithCoder:(NSCoder *)coder {
+	if ( (self=[super init]) ) {
+		self.key = [coder decodeObjectForKey:@"key"];
+		self.value = [coder decodeObjectForKey:@"value"];
+        self.edgesIn  = [NSMutableSet set];
+        self.edgesOut = [NSMutableSet set];
+	}
+	return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+	[coder encodeObject:self.key forKey:@"key"];
+	[coder encodeObject:self.value forKey:@"value"];
+}
+
 
 - (void)dealloc
 {

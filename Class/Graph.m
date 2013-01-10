@@ -151,7 +151,7 @@
 - (GraphNode*)addNode:(GraphNode*)node {
     GraphNode* existing = [nodes_ member:node];
     if (!existing) {
-		NSLog(@"Graph: addNode %@", [node key] );
+		//NSLog(@"Graph: addNode %@", [node key] );
 		[nodes_ addObject:node];
         existing = node;
     }
@@ -182,7 +182,9 @@
 
 - (BOOL)hasEdgeFromNodeWithKey:(NSString*)fromKey toNodeWithKey:(NSString*)toKey
 {
-	return [self hasEdgeFromNode:[GraphNode nodeWithKey:fromKey] toNode:[GraphNode nodeWithKey:toKey]];
+	GraphNode* fromNode = [self nodeWithKey:fromKey];
+	GraphNode* toNode = [self nodeWithKey:toKey];
+	return [self hasEdgeFromNode:fromNode toNode:toNode];
 }
 
 - (void)removeNode:(GraphNode*)node {
@@ -336,6 +338,49 @@
 	}
 	return l;
 
+}
+
+
+- (void)clear {
+	[nodes_ removeAllObjects];
+}
+
+- (BOOL)serializeToPath:(NSString*)path
+{
+	NSArray* allNodes = [[self allNodes] allObjects];
+	for ( GraphNode* n in allNodes ) {
+		Class keyClass = [[n key] class];
+		if ( ![n key] ||
+			( ![keyClass isSubclassOfClass:[NSNumber class]] && ![keyClass isSubclassOfClass:[NSString class]] &&
+			![keyClass isSubclassOfClass:[NSDate class]] && ![keyClass isSubclassOfClass:[NSData class]] ) )
+		{
+			NSLog(@"Graph::serializeToPath: to serialize, all nodes need a key that can be written via NSCoding");
+			return NO;
+		}
+	}
+	NSArray* allEdges = [[self allEdges] allObjects];
+	
+	NSDictionary* dict = [NSDictionary dictionaryWithObjectsAndKeys:allNodes, @"nodes", allEdges, @"edges", nil];
+	return [NSKeyedArchiver archiveRootObject:dict toFile:path];
+}
+
+- (BOOL)deserializeFromPath:(NSString*)path
+{
+	[self clear];
+	
+	NSDictionary* dict = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
+	if ( !dict )
+		return NO;
+	
+	NSArray* nodes = [dict objectForKey:@"nodes"];
+	for ( GraphNode* n in nodes )
+		[self addNode:n];
+	NSArray* edges = [dict objectForKey:@"edges"];
+	for ( GraphEdge* e in edges )
+		// this works because [node isEqual:] only looks at the keys
+		[self addEdgeFromNode:[e fromNode] toNode:[e toNode]];
+	
+	return YES;
 }
 
 @end

@@ -18,6 +18,8 @@
 
 - (NSArray*)shortestPath:(GraphNode*)source to:(GraphNode*)target;
 
+- (void)clear;
+
 - (GraphNode*)addNode:(GraphNode*)node;
 - (void)removeNode:(GraphNode*)node;
 - (BOOL)hasNodeWithKey:(NSString*)key;
@@ -43,5 +45,9 @@
 + (Graph*)graph;
 
 + (NSArray*)topologicalSortWithNodes:(NSSet*)nodes;
+
+// returns YES on success
+- (BOOL)serializeToPath:(NSString*)path;
+- (BOOL)deserializeFromPath:(NSString*)path;
 
 @end
