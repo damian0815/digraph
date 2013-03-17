@@ -10,9 +10,9 @@
 
 
 @interface GraphNode()
-@property (nonatomic, readwrite, retain) NSSet *edgesIn;
-@property (nonatomic, readwrite, retain) NSSet *edgesOut;
-@property (nonatomic, readwrite, retain) id    value;
+@property (nonatomic, readwrite, strong) NSMutableSet *edgesIn;
+@property (nonatomic, readwrite, strong) NSMutableSet *edgesOut;
+@property (nonatomic, readwrite, strong) id    value;
 - (GraphEdge*)linkToNode:(GraphNode*)node;
 - (GraphEdge*)linkToNode:(GraphNode*)node usingEdgeObject:(GraphEdge*)edge;
 - (GraphEdge*)linkToNode:(GraphNode*)node weight:(float)weight;
@@ -24,15 +24,13 @@
 
 // private methods for Graph
 @interface Graph()
-@property (nonatomic, readwrite, retain) NSSet *nodes;
+@property (nonatomic, readwrite, strong) NSMutableSet *nodes;
 - (GraphNode*)smallest_distance:(NSMutableDictionary*)dist nodes:(NSMutableSet*)nodes;
 - (BOOL)hasNode:(GraphNode*)node;
 @end
 
 
 @implementation Graph
-
-@synthesize nodes = nodes_;
 
 - (id)init
 {
@@ -43,11 +41,6 @@
     return self;
 }
 
-- (void)dealloc
-{
-    [nodes_ release];
-    [super dealloc];
-}
 
 
 
@@ -55,16 +48,16 @@
 // Using Dijkstra's algorithm to find shortest path
 // See http://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
 - (NSArray*)shortestPath:(GraphNode*)source to:(GraphNode*)target {
-    if (![nodes_ containsObject:source] || ![nodes_ containsObject:target]) {
+    if (![self.nodes containsObject:source] || ![self.nodes containsObject:target]) {
         return [NSArray array];
     }
 
-    NSUInteger size = [nodes_ count];
+    NSUInteger size = [self.nodes count];
     NSMutableDictionary* dist = [NSMutableDictionary dictionaryWithCapacity:size];
     NSMutableDictionary* prev = [NSMutableDictionary dictionaryWithCapacity:size];
-    NSMutableSet* remaining = [[nodes_ mutableCopy] autorelease];
+    NSMutableSet* remaining = [self.nodes mutableCopy];
     
-    for(GraphNode* node in [nodes_ objectEnumerator])
+    for(GraphNode* node in [self.nodes objectEnumerator])
         [dist setObject:[NSNumber numberWithFloat:INFINITY] forKey:node];
     
     [dist setObject:[NSNumber numberWithFloat:0.0f] forKey:source];
@@ -94,7 +87,7 @@
         [remaining removeObject:minNode];
 
         // find neighbors that have not been removed yet
-        NSMutableSet* neighbors = [[[minNode outNodes] mutableCopy] autorelease];
+        NSMutableSet* neighbors = [[minNode outNodes] mutableCopy];
         [neighbors intersectSet:remaining];
         
         // loop through each neighbor to find min dist
@@ -132,7 +125,7 @@
 }
 
 - (BOOL)hasNode:(GraphNode*)node {
-    return nil != [nodes_ member:node];
+    return nil != [self.nodes member:node];
 }
 
 - (BOOL)hasNodeWithKey:(NSString*)key {
@@ -140,7 +133,7 @@
 }
 
 - (GraphNode*)nodeWithKey:(NSString*)key {
-	return [nodes_ member:[GraphNode nodeWithKey:key]];
+	return [self.nodes member:[GraphNode nodeWithKey:key]];
 }
 
 
@@ -149,10 +142,10 @@
 // If an equal node already exists, the existing node is returned
 // Otherwise, the new node is added to the set and then returned.
 - (GraphNode*)addNode:(GraphNode*)node {
-    GraphNode* existing = [nodes_ member:node];
+    GraphNode* existing = [self.nodes member:node];
     if (!existing) {
 		//NSLog(@"Graph: addNode %@", [node key] );
-		[nodes_ addObject:node];
+		[self.nodes addObject:node];
         existing = node;
     }
     return existing;
@@ -188,7 +181,7 @@
 }
 
 - (void)removeNode:(GraphNode*)node {
-    [nodes_ removeObject:node];
+    [self.nodes removeObject:node];
 }
 
 - (void)removeEdge:(GraphEdge*)edge {
@@ -225,12 +218,12 @@
 
 
 + (Graph*)graph {
-    return [[[self alloc] init] autorelease];
+    return [[self alloc] init];
 }
 
 
 - (NSSet*)allNodes{
-	return nodes_;
+	return self.nodes;
 }
 
 - (NSSet*)allEdges{
@@ -248,7 +241,7 @@
 {
 	NSMutableArray* components = [NSMutableArray array];
 	
-	NSMutableSet* remaining = [[[self allNodes] mutableCopy] autorelease];
+	NSMutableSet* remaining = [[self allNodes] mutableCopy];
 	while ( [remaining count] > 0 )
 	{
 		GraphNode* node = [remaining anyObject];
@@ -342,7 +335,7 @@
 
 
 - (void)clear {
-	[nodes_ removeAllObjects];
+	[self.nodes removeAllObjects];
 }
 
 - (BOOL)serializeToPath:(NSString*)path

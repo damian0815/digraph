@@ -13,8 +13,8 @@
 #define NSUINTROTATE(val, howmuch) ((((NSUInteger)val) << howmuch) | (((NSUInteger)val) >> (NSUINT_BIT - howmuch)))
 
 @interface GraphEdge()
-@property (nonatomic, readwrite, retain)  GraphNode *fromNode;
-@property (nonatomic, readwrite, retain)  GraphNode *toNode;
+@property (nonatomic, readwrite, strong)  GraphNode *fromNode;
+@property (nonatomic, readwrite, strong)  GraphNode *toNode;
 
 - (void)setFromNode:(GraphNode *)from toNode:(GraphNode*)to;
 
@@ -83,12 +83,6 @@
 	self.toNode = to;
 }
 
--(void) dealloc
-{
-	[fromNode_ release];
-    [toNode_ release];
-	[super dealloc];
-}
 
 - (BOOL)isEqual:(id)other {
     if (other == self)
@@ -115,15 +109,15 @@
 }
 
 + (id)edge {
-    return [[[self alloc] init] autorelease];
+    return [[self alloc] init];
 }
 
 + (id)edgeWithFromNode:(GraphNode*)fromNode toNode:(GraphNode*)toNode {
-    return [[[self alloc] initWithFromNode:fromNode toNode:toNode] autorelease];  
+    return [[self alloc] initWithFromNode:fromNode toNode:toNode];  
 }
 
 + (id)edgeWithFromNode:(GraphNode*)fromNode toNode:(GraphNode*)toNode weight:(float)weight {
-    return [[[self alloc] initWithFromNode:fromNode toNode:toNode weight:weight] autorelease];  
+    return [[self alloc] initWithFromNode:fromNode toNode:toNode weight:weight];  
 }
 
 - (NSString*)description

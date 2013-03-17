@@ -10,15 +10,10 @@
 
 @class GraphNode;
 
-@interface GraphEdge : NSObject<NSCoding> {
-    GraphNode   *fromNode_;
-    GraphNode   *toNode_;
-    float       weight_;
-	BOOL        reverted_;
-}
+@interface GraphEdge : NSObject<NSCoding> 
 
-@property (nonatomic, readonly, retain)  GraphNode *fromNode;
-@property (nonatomic, readonly, retain)  GraphNode *toNode;
+@property (nonatomic, readonly, strong)  GraphNode *fromNode;
+@property (nonatomic, readonly, strong)  GraphNode *toNode;
 @property (nonatomic, readwrite, assign) float     weight;
 @property (nonatomic, assign)	 BOOL      reverted;
 

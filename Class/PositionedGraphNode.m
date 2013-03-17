@@ -36,11 +36,11 @@
 }
 
 + (id)node {
-	return [[[PositionedGraphNode alloc] init] autorelease];
+	return [[PositionedGraphNode alloc] init];
 }
 
 + (id)nodeWithKey:(NSString*)key {
-	return [[[PositionedGraphNode alloc] initWithKey:key] autorelease];
+	return [[PositionedGraphNode alloc] initWithKey:key];
 }
 
 @end

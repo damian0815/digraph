@@ -10,11 +10,9 @@
 #import "GraphEdge.h"
 #import "GraphNode.h"
 
-@interface Graph : NSObject {
-    NSMutableSet *nodes_;
-}
+@interface Graph : NSObject
 
-@property (nonatomic, readonly, retain) NSSet *nodes;
+@property (nonatomic, readonly, strong) NSMutableSet *nodes;
 
 - (NSArray*)shortestPath:(GraphNode*)source to:(GraphNode*)target;
 
