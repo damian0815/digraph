@@ -11,11 +11,9 @@
 
 @interface PositionedGraphNode : GraphNode<NSCoding>
 
-@property (assign) CGPoint pos;
-@property (assign) CGSize size;
-
-
-@property (assign) int index;
+@property (assign,readwrite,atomic) CGPoint pos;
+@property (assign,readwrite,atomic) CGSize size;
+@property (assign,readwrite,atomic) int index;
 
 - (CGPoint)centrePos;
 - (void)setCentrePos:(CGPoint)centrePos;

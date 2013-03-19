@@ -187,7 +187,7 @@ void SugiyamaLayout::splitIntoLayers() {
 			h = max(h, lmap[n2] + 1);
 		}
 	}
-	stack.init(h, sorted.size());
+	stack.init(h, (int)sorted.size());
 	for ( vector<PositionedGraphNode*>::iterator it = sorted.begin(); it != sorted.end(); ++it )
 	{
 		PositionedGraphNode* n = *it;
@@ -268,11 +268,8 @@ void SugiyamaLayout::removeCycles() {
 	}
 }
 
+bool compareOutDegrees( PositionedGraphNode* n1, PositionedGraphNode* n2 );
 bool compareOutDegrees( PositionedGraphNode* n1, PositionedGraphNode* n2 ) {
-/*	public int compare(Node n1, Node n2) {
-		return n2.getOutDegree() - n1.getOutDegree();
-	}*/
-
 	return [n2 outDegree] < [n1 outDegree];
 }
 
@@ -287,12 +284,8 @@ vector<PositionedGraphNode*> SugiyamaLayout::sortByOutDegree() {
 	return nodes;
 }
 
+bool compareInMinusOutDegree( PositionedGraphNode* n1, PositionedGraphNode* n2 );
 bool compareInMinusOutDegree( PositionedGraphNode* n1, PositionedGraphNode* n2 ){
-/*
- public int compare(Node n1, Node n2) {
-	return (n1.getInDegree() * 2 - n1.getOutDegree()) - (n2.getInDegree() * 2 - n2.getOutDegree());
- }
-*/
 	return ([n1 inDegree]*2 - [n1 outDegree]) < ([n2 inDegree]*2 - [n2 outDegree]);
 }
 
