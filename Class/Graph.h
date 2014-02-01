@@ -44,6 +44,7 @@
 
 + (NSArray*)topologicalSortWithNodes:(NSSet*)nodes;
 
+- (NSData*)serializeToNSData;
 // returns YES on success
 - (BOOL)serializeToPath:(NSString*)path;
 - (BOOL)deserializeFromPath:(NSString*)path;

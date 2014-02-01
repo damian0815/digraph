@@ -338,7 +338,7 @@
 	[self.nodes removeAllObjects];
 }
 
-- (BOOL)serializeToPath:(NSString*)path
+- (NSData*)serializeToNSData
 {
 	NSArray* allNodes = [[self allNodes] allObjects];
 	for ( GraphNode* n in allNodes ) {
@@ -354,7 +354,21 @@
 	NSArray* allEdges = [[self allEdges] allObjects];
 	
 	NSDictionary* dict = [NSDictionary dictionaryWithObjectsAndKeys:allNodes, @"nodes", allEdges, @"edges", nil];
-	return [NSKeyedArchiver archiveRootObject:dict toFile:path];
+	NSData* data = [NSKeyedArchiver archivedDataWithRootObject:dict];
+	return data;
+}
+
+- (BOOL)serializeToPath:(NSString*)path
+{
+	NSData* data = [self serializeToNSData];
+	NSError* error = nil;
+	[data writeToFile:path options:NSDataWritingAtomic error:&error];
+	if ( error ) {
+		NSLog(@"Error %@ writing graph to '%@'" , error, path );
+		return NO;
+	} else {
+		return YES;
+	}
 }
 
 - (BOOL)deserializeFromPath:(NSString*)path

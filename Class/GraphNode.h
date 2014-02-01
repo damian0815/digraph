@@ -25,6 +25,10 @@
 - (NSUInteger)outDegree;
 - (BOOL)isSource;
 - (BOOL)isSink;
+
+/*! @abstract Only valid if this graph is a tree */
+- (GraphNode*)inNode;
+
 - (NSSet*)outNodes;
 - (NSSet*)inNodes;
 - (GraphEdge*)edgeConnectedTo:(GraphNode*)toNode;

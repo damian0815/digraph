@@ -176,6 +176,16 @@
     return set;
 }
 
+- (GraphNode*)inNode
+{
+	NSAssert(self.edgesIn.count < 2, @"Failure: graph is not a tree");
+	if ( self.edgesIn.count==0 ) {
+		return nil;
+	} else {
+		return [(GraphEdge*)[self.edgesIn anyObject] fromNode];
+	}
+}
+
 - (NSSet*)inNodes {
     NSMutableSet* set = [NSMutableSet setWithCapacity:[self.edgesIn count]];
     for( GraphEdge* edge in [self.edgesIn objectEnumerator] ) {
