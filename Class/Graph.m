@@ -348,7 +348,7 @@
 			![keyClass isSubclassOfClass:[NSDate class]] && ![keyClass isSubclassOfClass:[NSData class]] ) )
 		{
 			NSLog(@"Graph::serializeToPath: to serialize, all nodes need a key that can be written via NSCoding");
-			return NO;
+			return nil;
 		}
 	}
 	NSArray* allEdges = [[self allEdges] allObjects];
