@@ -12,7 +12,7 @@
 
 @interface Graph : NSObject
 
-@property (nonatomic, readonly, strong) NSMutableSet *nodes;
+@property (nonatomic, readonly, strong) NSMutableDictionary *nodes;
 
 - (NSArray*)shortestPath:(GraphNode*)source to:(GraphNode*)target;
 

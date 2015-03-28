@@ -24,7 +24,7 @@
 
 // private methods for Graph
 @interface Graph()
-@property (nonatomic, readwrite, strong) NSMutableSet *nodes;
+@property (nonatomic, readwrite, strong) NSMutableDictionary *nodes;
 - (GraphNode*)smallest_distance:(NSMutableDictionary*)dist nodes:(NSMutableSet*)nodes;
 - (BOOL)hasNode:(GraphNode*)node;
 @end
@@ -35,7 +35,7 @@
 - (id)init
 {
     if ( (self = [super init]) ) {
-        self.nodes = [NSMutableSet set];
+        self.nodes = [NSMutableDictionary dictionary];
     }
     
     return self;
@@ -48,7 +48,7 @@
 // Using Dijkstra's algorithm to find shortest path
 // See http://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
 - (NSArray*)shortestPath:(GraphNode*)source to:(GraphNode*)target {
-    if (![self.nodes containsObject:source] || ![self.nodes containsObject:target]) {
+	if (![self hasNodeWithKey:source.key] || ![self hasNodeWithKey:target.key]) {
         return [NSArray array];
     }
 
@@ -125,15 +125,15 @@
 }
 
 - (BOOL)hasNode:(GraphNode*)node {
-    return nil != [self.nodes member:node];
+	return [self hasNodeWithKey:node.key];
 }
 
 - (BOOL)hasNodeWithKey:(NSString*)key {
-	return [self hasNode:[GraphNode nodeWithKey:key]];
+	return [self nodeWithKey:key] != nil;
 }
 
 - (GraphNode*)nodeWithKey:(NSString*)key {
-	return [self.nodes member:[GraphNode nodeWithKey:key]];
+	return [self.nodes objectForKey:key];
 }
 
 
@@ -142,10 +142,10 @@
 // If an equal node already exists, the existing node is returned
 // Otherwise, the new node is added to the set and then returned.
 - (GraphNode*)addNode:(GraphNode*)node {
-    GraphNode* existing = [self.nodes member:node];
+	GraphNode* existing = [self.nodes objectForKey:node.key];
     if (!existing) {
 		//NSLog(@"Graph: addNode %@", [node key] );
-		[self.nodes addObject:node];
+		[self.nodes setObject:node forKey:node.key];
         existing = node;
     }
     return existing;
@@ -168,6 +168,7 @@
     toNode   = [self addNode:toNode];
     return [fromNode linkToNode:toNode weight:weight];    
 }
+
 - (BOOL)hasEdgeFromNode:(GraphNode*)fromNode toNode:(GraphNode*)toNode
 {
 	return [[fromNode outNodes] containsObject:toNode];
@@ -176,12 +177,16 @@
 - (BOOL)hasEdgeFromNodeWithKey:(NSString*)fromKey toNodeWithKey:(NSString*)toKey
 {
 	GraphNode* fromNode = [self nodeWithKey:fromKey];
-	GraphNode* toNode = [self nodeWithKey:toKey];
-	return [self hasEdgeFromNode:fromNode toNode:toNode];
+	for (GraphEdge* edge in fromNode.edgesOut) {
+		if ([edge.toNode.key isEqualToString:toKey]) {
+			return YES;
+		}
+	}
+	return NO;
 }
 
 - (void)removeNode:(GraphNode*)node {
-    [self.nodes removeObject:node];
+	[self.nodes removeObjectForKey:node.key];
 }
 
 - (void)removeEdge:(GraphEdge*)edge {
@@ -343,9 +348,7 @@
 	NSArray* allNodes = [[self allNodes] allObjects];
 	for ( GraphNode* n in allNodes ) {
 		Class keyClass = [[n key] class];
-		if ( ![n key] ||
-			( ![keyClass isSubclassOfClass:[NSNumber class]] && ![keyClass isSubclassOfClass:[NSString class]] &&
-			![keyClass isSubclassOfClass:[NSDate class]] && ![keyClass isSubclassOfClass:[NSData class]] ) )
+		if ( ![n key] )
 		{
 			NSLog(@"Graph::serializeToPath: to serialize, all nodes need a key that can be written via NSCoding");
 			return nil;

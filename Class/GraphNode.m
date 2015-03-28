@@ -186,7 +186,8 @@
 	}
 }
 
-- (NSSet*)inNodes {
+- (NSSet*)inNodes
+{
     NSMutableSet* set = [NSMutableSet setWithCapacity:[self.edgesIn count]];
     for( GraphEdge* edge in [self.edgesIn objectEnumerator] ) {
         [set addObject: [edge fromNode]];
@@ -194,7 +195,8 @@
     return set;    
 }
 
-- (GraphEdge*)edgeConnectedTo:(GraphNode*)toNode {
+- (GraphEdge*)edgeConnectedTo:(GraphNode*)toNode
+{
     for(GraphEdge* edge in [ self.edgesOut objectEnumerator]) {
         if( [edge toNode] == toNode )
             return edge;
