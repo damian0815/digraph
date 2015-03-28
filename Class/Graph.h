@@ -23,7 +23,7 @@
 - (BOOL)hasNodeWithKey:(NSString*)key;
 - (GraphNode*)nodeWithKey:(NSString*)key;
 
-- (NSSet*)allNodes;
+- (NSArray*)allNodes;
 - (NSSet*)allEdges;
 
 - (GraphEdge*)addEdgeFromNode:(GraphNode*)fromNode toNode:(GraphNode*)toNode;

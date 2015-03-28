@@ -21,10 +21,7 @@
 - (GraphEdge*)linkToNode:(GraphNode*)node;
 - (GraphEdge*)linkToNode:(GraphNode*)node usingEdgeObject:(GraphEdge*)edge;
 - (GraphEdge*)linkToNode:(GraphNode*)node weight:(float)weight;
-- (GraphEdge*)linkFromNode:(GraphNode*)node;
-- (GraphEdge*)linkFromNode:(GraphNode*)node weight:(float)weight;
 - (void)unlinkToNode:(GraphNode*)node;
-- (void)unlinkFromNode:(GraphNode*)node;
 @end
 
 @implementation GraphNode
@@ -63,19 +60,6 @@
 	[coder encodeObject:self.value forKey:@"value"];
 }
 
-
-- (void)dealloc
-{
-    // need to remove all relavent edges in neighboring nodes
-    for (GraphNode* toNode in [[self outNodes] objectEnumerator]) {
-        [toNode.edgesIn minusSet:self.edgesOut];
-    }
-    
-    for (GraphNode* fromNode in [[self inNodes] objectEnumerator]) {
-        [fromNode.edgesOut minusSet:self.edgesIn];
-    }
-    
-}
 
 - (BOOL)isEqual:(id)other {
     if (other == self)
@@ -122,34 +106,12 @@
     return edge;
 }
 
-- (GraphEdge*)linkFromNode:(GraphNode*)node {
-    GraphEdge* edge = [GraphEdge edgeWithFromNode:node toNode:self];
-    [self.edgesIn           addObject:edge];
-    [node.edgesOut    addObject:edge];
-    return edge;
-}
-
-- (GraphEdge*)linkFromNode:(GraphNode*)node weight:(float)weight {
-    GraphEdge* edge = [GraphEdge edgeWithFromNode:node toNode:self weight:weight];
-    [self.edgesIn           addObject:edge];
-    [node.edgesOut    addObject:edge];
-    return edge;
-}
-
 - (void)unlinkToNode:(GraphNode*)node {
     GraphEdge* edge = [self edgeConnectedTo: node];
     GraphNode* from = [edge   fromNode];
     GraphNode* to   = [edge   toNode];
     [from.edgesOut removeObject:edge];
     [to.edgesIn    removeObject:edge];
-}
-
-- (void)unlinkFromNode:(GraphNode*)node {
-    GraphEdge* edge = [self edgeConnectedFrom: node];
-    GraphNode* from = [edge   fromNode];
-    GraphNode* to   = [edge   toNode];
-    [from.edgesOut removeObject:edge];
-    [to.edgesIn    removeObject:edge];    
 }
 
 - (NSUInteger)inDegree {

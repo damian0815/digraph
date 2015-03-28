@@ -16,10 +16,7 @@
 - (GraphEdge*)linkToNode:(GraphNode*)node;
 - (GraphEdge*)linkToNode:(GraphNode*)node usingEdgeObject:(GraphEdge*)edge;
 - (GraphEdge*)linkToNode:(GraphNode*)node weight:(float)weight;
-- (GraphEdge*)linkFromNode:(GraphNode*)node;
-- (GraphEdge*)linkFromNode:(GraphNode*)node weight:(float)weight;
 - (void)unlinkToNode:(GraphNode*)node;
-- (void)unlinkFromNode:(GraphNode*)node;
 @end
 
 // private methods for Graph
@@ -55,9 +52,9 @@
     NSUInteger size = [self.nodes count];
     NSMutableDictionary* dist = [NSMutableDictionary dictionaryWithCapacity:size];
     NSMutableDictionary* prev = [NSMutableDictionary dictionaryWithCapacity:size];
-    NSMutableSet* remaining = [self.nodes mutableCopy];
+	NSMutableSet* remaining = [NSMutableSet setWithArray:[self allNodes]];
     
-    for(GraphNode* node in [self.nodes objectEnumerator])
+    for(GraphNode* node in [remaining objectEnumerator])
         [dist setObject:[NSNumber numberWithFloat:INFINITY] forKey:node];
     
     [dist setObject:[NSNumber numberWithFloat:0.0f] forKey:source];
@@ -227,13 +224,13 @@
 }
 
 
-- (NSSet*)allNodes{
-	return self.nodes;
+- (NSArray*)allNodes{
+	return [self.nodes allValues];
 }
 
 - (NSSet*)allEdges{
 	NSMutableSet* edges = [NSMutableSet set];
-	NSSet* nodes = [self allNodes];
+	NSArray* nodes = [self allNodes];
 	for ( GraphNode* node in nodes ) {
 		[edges unionSet:[node edgesIn]];
 		[edges unionSet:[node edgesOut]];
@@ -345,9 +342,8 @@
 
 - (NSData*)serializeToNSData
 {
-	NSArray* allNodes = [[self allNodes] allObjects];
+	NSArray* allNodes = [self allNodes];
 	for ( GraphNode* n in allNodes ) {
-		Class keyClass = [[n key] class];
 		if ( ![n key] )
 		{
 			NSLog(@"Graph::serializeToPath: to serialize, all nodes need a key that can be written via NSCoding");
