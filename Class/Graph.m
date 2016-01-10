@@ -328,7 +328,7 @@
 		}
 	}
 	if ( [nodes count] != [l count] ) {
-		NSLog(@"Topological sort failed for graph, %i total nodes (%@), %i sorted nodes (%@), r contains %@, remaining nodes: %@\n", [nodes count], nodes, [l count], l, r, q );
+		NSLog(@"Topological sort failed for graph, %i total nodes (%@), %i sorted nodes (%@), r contains %@, remaining nodes: %@\n", (int)[nodes count], nodes, (int)[l count], l, r, q );
 		assert(false && "topological sort failed");
 	}
 	return l;
